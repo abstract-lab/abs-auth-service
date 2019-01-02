@@ -1,11 +1,13 @@
 import * as winston from 'winston';
 
 import { Listener } from './listener';
+import { RabbitMessageQueue } from 'app/shared/mq/rabbit.mq.component';
 
 export class InfoListener implements Listener {
-    constructor(private logger: winston.Logger) { }
-    readonly patternString: string = 'auth.*.info';
+    constructor(private mq: RabbitMessageQueue, private logger: winston.Logger) { }
+    readonly patternString: string = '*.request.info';
     readonly queueName: string = 'AuthInfoQueue';
+    readonly exchangeName: string = 'GatewayEvents';
 
     async onMessageReceived(msg: any): Promise<boolean> {
         return new Promise<boolean>(async (resolve, reject) => {
@@ -13,6 +15,11 @@ export class InfoListener implements Listener {
                 this.logger.info(`Received message on ${this.queueName} queue`);
 
                 try {
+                    this.mq.sendToQueue({
+                        queue: msg.properties.replyTo,
+                        content: {},
+                        options: {},
+                    });
                 } catch (err) {
                     this.logger.error(`Error executing saga: ${err}`);
                 } finally {

@@ -14,14 +14,13 @@ export class ListenerService {
     constructor(private mq: RabbitMessageQueue, private loggingService: LoggingService) {
         this.logger = this.loggingService.getLogger();
         this.initialiseListeners();
-        this.listen();
     }
 
     private initialiseListeners(): void {
-        this.listeners.push(new InfoListener(this.logger));
+        this.listeners.push(new InfoListener(this.mq, this.logger));
     }
 
-    private async listen(): Promise<void> {
+    public async listen(): Promise<void> {
         await Promise.all(this.listeners.map(listener => this.mq.listenToQueue(listener)));
     }
 }

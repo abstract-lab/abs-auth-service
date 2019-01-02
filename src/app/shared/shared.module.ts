@@ -5,7 +5,7 @@ import { configurationServiceFactory } from './configuration/configuration-servi
 import { DbServerService } from './database/dbServer.service';
 import { serverFactory } from './database/server.factory';
 import { LoggingService } from './logging/logging.service';
-import { logginsServiceFactory } from './logging/logging-service.factory';
+import { loggingServiceFactory } from './logging/logging-service.factory';
 import { RabbitMQServer } from './mq/rabbit-server';
 import { mqServerFactory } from './mq/mq-server.factory';
 import { RabbitMessageQueue } from './mq/rabbit.mq.component';
@@ -18,7 +18,7 @@ import { messageFactory } from './mq/mq-factory.component';
             useFactory: configurationServiceFactory,
         }, {
             provide: LoggingService,
-            useFactory: logginsServiceFactory,
+            useFactory: loggingServiceFactory,
             inject: [ ConfigurationService ],
         }, {
             provide: DbServerService,

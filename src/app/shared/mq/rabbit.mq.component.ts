@@ -3,6 +3,7 @@ import * as amqp from 'amqplib';
 import * as winston from 'winston';
 
 import { Listener } from '../../listeners/listener';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class RabbitMessageQueue {
@@ -41,10 +42,6 @@ export class RabbitMessageQueue {
         });
     }
 
-    public async ensureInfrastructure(): Promise<void> {
-        await this.channel.assertExchange(this.options.exchange, 'topic');
-    }
-
     private delay(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -53,7 +50,7 @@ export class RabbitMessageQueue {
         const queueAssert = await this.channel.assertQueue(listener.queueName);
 
         if (queueAssert.queue) {
-            await this.channel.bindQueue(listener.queueName, this.options.exchange, listener.patternString);
+            await this.channel.bindQueue(listener.queueName, listener.exchangeName, listener.patternString);
 
             this.channel.consume(listener.queueName, (async (msg: amqp.Message) => {
                 const result = await listener.onMessageReceived(msg);
@@ -81,5 +78,17 @@ export class RabbitMessageQueue {
                 reject(err);
             }
         });
+    }
+
+    public sendToQueue(message: { queue: string, content: any, options: amqp.Options.Publish }): boolean {
+        try {
+            this.channel.sendToQueue(message.queue, new Buffer(JSON.stringify(message.content)), message.options);
+            this.logger.info(`Successfully sent to queue: `, message);
+
+            return true;
+        } catch (error) {
+            this.logger.error(`Error sending message to queue:  ${message.queue}: ${error}`);
+            return false;
+        }
     }
 }
