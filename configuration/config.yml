@@ -1,9 +1,11 @@
 mq:
-  hostname: 192.168.10.99
+  host: 192.168.10.99
   port: 5672
   username: rabbitmq
   password: rabbitmq
   queue: ci-auth-queue
+  retryCount: 10
+  retryTimeout: 5
 db:
   host: 192.168.10.99
   port: 2424

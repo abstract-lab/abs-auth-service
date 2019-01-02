@@ -4,7 +4,11 @@ import * as fs from 'fs';
 
 @Injectable()
 export class ConfigurationService {
-    private config: any = {};
+    private config: any = {
+        mq: {},
+        db: {},
+        log: {},
+    };
     constructor(private configFile: string) { }
 
     public load(): void {

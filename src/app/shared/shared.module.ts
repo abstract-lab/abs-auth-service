@@ -6,9 +6,10 @@ import { DbServerService } from './database/dbServer.service';
 import { serverFactory } from './database/server.factory';
 import { LoggingService } from './logging/logging.service';
 import { logginsServiceFactory } from './logging/logging-service.factory';
-import { DatabaseService } from './database/database.service';
 import { RabbitMQServer } from './mq/rabbit-server';
 import { mqServerFactory } from './mq/mq-server.factory';
+import { RabbitMessageQueue } from './mq/rabbit.mq.component';
+import { messageFactory } from './mq/mq-factory.component';
 
 @Module({
     providers: [
@@ -23,17 +24,22 @@ import { mqServerFactory } from './mq/mq-server.factory';
             provide: DbServerService,
             useFactory: serverFactory,
             inject: [ ConfigurationService, LoggingService ],
-        }, {
-            provide: RabbitMQServer,
-            useFactory: mqServerFactory,
-            inject: [ ConfigurationService ],
+        },
+        // {
+        //     provide: RabbitMQServer,
+        //     useFactory: mqServerFactory,
+        //     inject: [ ConfigurationService ],
+        // },
+        {
+            provide: RabbitMessageQueue, useFactory: messageFactory, inject: [ ConfigurationService, LoggingService ],
         },
     ],
     exports: [
         ConfigurationService,
         DbServerService,
         LoggingService,
-        RabbitMQServer,
+        // RabbitMQServer,
+        RabbitMessageQueue,
     ],
 })
 export class SharedModule { }

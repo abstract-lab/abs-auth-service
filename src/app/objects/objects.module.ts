@@ -9,7 +9,7 @@ import { LoggingService } from '../shared/logging/logging.service';
 
 @Module({
     imports: [ SharedModule ],
-    controllers: [ ObjectsController ],
+    // controllers: [ ObjectsController ],
     providers: [{
         provide: DatabaseService,
         useFactory: (server: DbServerService, logger: LoggingService) => new DatabaseService(server.getDb(AuthDb.Objects), logger),

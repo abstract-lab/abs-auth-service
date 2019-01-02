@@ -3,7 +3,6 @@ import * as OrientDb from 'orientjs';
 
 import { LoggingService } from '../logging/logging.service';
 import { DATABASES, AuthType, AuthClass, AuthField, AuthClassEnum } from '../../utils/consts';
-import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class DbServerService {

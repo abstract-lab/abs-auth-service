@@ -14,6 +14,6 @@ export class AppModule {
     this.loggingService.connect();
     this.loggingService.getLogger().info('Application module initialised');
 
-    await this.dbServer.initialisation();
+    // await this.dbServer.initialisation();
   }
 }
