@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import * as bonjour from 'bonjour';
 
 import { LoggingService } from './shared/logging/logging.service';
 import { DbServerService } from './shared/database/dbServer.service';
@@ -17,6 +18,9 @@ export class AppModule {
 
     try {
       this.loggingService.getLogger().info(`Initialising Auth Service`);
+      const service = bonjour();
+      service.publish({ type: 'rue-service', name: 'abs-auth-service', port: 5000 });
+
       this.listenerService.listen();
     } catch (e) {
       this.loggingService.getLogger().error(`Error initialising Auth Service: ${e}`);
